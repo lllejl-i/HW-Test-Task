@@ -1,0 +1,11 @@
+#unity-content-container {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding-top: 0;
+}
+
+.scrollView {
+    pointer-events: none;
+    events: none;
+}
