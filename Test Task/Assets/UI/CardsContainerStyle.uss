@@ -1,5 +1,0 @@
-#unity-content-container {
-    justify-content: flex-start;
-    align-items: stretch;
-    flex-direction: column;
-}

@@ -1,11 +1,11 @@
-using Newtonsoft.Json;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
+using Zenject;
 
 public class SecondSceneDoc : AnimatedToolkitPage
 {
@@ -14,14 +14,51 @@ public class SecondSceneDoc : AnimatedToolkitPage
 	private WeatherCard[,] _items;
 	private List<WeatherCard> _removedCards = new List<WeatherCard>();
 	private bool _loaded = false;
+	private WeatherDataController _controller;
+	private SettingsDoc _settings;
+	private Audio _audio;
+
+	[Inject]
+	public void InjectDependencies(WeatherDataController weatherData, SettingsDoc settings, Audio audio)
+	{
+		_controller = weatherData;
+		_settings = settings;
+		_audio = audio;
+	}
+
 	private void Awake()
 	{
 		_doc = GetComponent<UIDocument>();
-
 	}
 
-
 	private void OnEnable()
+	{
+		var template = LoadData();
+		var reset = _doc.rootVisualElement.Q<Button>("ResetButton");
+		reset.clicked += () =>
+		{
+			CardsReset();
+			_audio.OnClickMusic();
+		};
+
+		_doc.rootVisualElement.Q<Button>("SettingsButton").clicked += () =>
+		{
+			_settings.gameObject.SetActive(true);
+			_audio.OnClickMusic();
+		};
+
+		_doc.rootVisualElement.Q<Button>("CloseButton").clicked += () =>
+		{
+			SceneManager.LoadScene("FirstScene");
+			_audio.OnClickMusic();
+		};
+
+		AddAnimation<MouseEnterEvent, MouseLeaveEvent>(reset, AnimationType.Growing);
+		AddAnimation<MouseEnterEvent, MouseLeaveEvent>(reset, AnimationType.BackgroundColorChanging);
+		StartCoroutine(AddEmptyCards(template));
+	}
+
+	private VisualElement LoadData()
 	{
 		_rows = _doc.rootVisualElement.Q<VisualElement>("CardsContainer")
 			.Query<VisualElement>("RowTemplate")
@@ -29,8 +66,20 @@ public class SecondSceneDoc : AnimatedToolkitPage
 			.Select(i => i.Q<VisualElement>("Container"))
 			.ToList();
 		List<VisualElement> cardsList = _rows.SelectMany(r => r.Query<VisualElement>("WeatherCard").ToList()).ToList();
-		 
-		_items = WeatherDataController.Controller.CreateWeatherCards(cardsList);
+
+		_items = _controller.CreateWeatherCards(cardsList);
+		foreach (var item in _items)
+		{
+			if (item.Weather != null)
+			{
+				item.WeatherCardItem.RegisterCallback<MouseDownEvent>((e) =>
+				{
+					_audio.OnClickMusic();
+				});
+				StartCoroutine(LoadIcon(item));
+			}
+		}
+
 
 		foreach (var item in _items)
 		{
@@ -44,20 +93,7 @@ public class SecondSceneDoc : AnimatedToolkitPage
 		}
 
 		_loaded = true;
-
-		var button = _doc.rootVisualElement.Q<Button>("ResetButton");
-		button.clicked += () =>
-		{
-			CardsReset();
-		};
-		_doc.rootVisualElement.Q<Button>("CloseButton").clicked += () =>
-		{
-			SceneManager.LoadScene("FirstScene");
-		};
-
-		AddAnimation<MouseEnterEvent, MouseLeaveEvent>(button, AnimationType.Growing);
-		AddAnimation<MouseEnterEvent, MouseLeaveEvent>(button, AnimationType.BackgroundColorChanging);
-		StartCoroutine(AddEmptyCards(cardsList[0]));
+		return cardsList[0];
 	}
 
 	private IEnumerator AddEmptyCards(VisualElement template)
@@ -70,6 +106,24 @@ public class SecondSceneDoc : AnimatedToolkitPage
 				item.WeatherCardItem = CreateEmptyElement(template);
 				_rows[item.RowGridPosition].RemoveAt(item.ColGridPosition);
 				_rows[item.RowGridPosition].Insert(item.ColGridPosition, item.WeatherCardItem);
+			}
+		}
+	}
+
+	private IEnumerator LoadIcon(WeatherCard item)
+	{
+		using (UnityWebRequest imgRequest = UnityWebRequestTexture.GetTexture(item.Weather.TextureUrl))
+		{
+			yield return imgRequest.SendWebRequest();
+			yield return new WaitForEndOfFrame();
+			if (imgRequest.result != UnityWebRequest.Result.Success)
+			{
+				Debug.Log(imgRequest.error);
+			}
+			else
+			{
+				var texture = DownloadHandlerTexture.GetContent(imgRequest);
+				item.WeatherCardItem.Q<VisualElement>("icon").style.backgroundImage = new StyleBackground(texture);
 			}
 		}
 	}
@@ -100,7 +154,7 @@ public class SecondSceneDoc : AnimatedToolkitPage
 	private void CardsReset() {
 		if (_loaded)
 		{
-			var temp = WeatherDataController.Controller.GetCards();
+			var temp = _controller.GetCards();
 			for (int i = 0; i < 3; i++)
 			{
 				for (int j = 0; j < 3; j++)
@@ -152,44 +206,7 @@ public class SecondSceneDoc : AnimatedToolkitPage
 	{
 		if (_loaded)
 		{
-			WeatherDataController.Controller.SaveData(_items);
+			_controller.SaveData(_items);
 		}
-	}
-}
-
-public class WeatherCard : ICloneable
-{
-	[JsonIgnore]
-	public VisualElement WeatherCardItem { get; set; }
-	public Weather Weather;
-	public int RowGridPosition;
-	public int ColGridPosition;
-
-	public object Clone()
-	{
-		return new WeatherCard()
-		{
-			WeatherCardItem = WeatherCardItem,
-			RowGridPosition = RowGridPosition,
-			ColGridPosition = ColGridPosition,
-			Weather = (Weather)Weather?.Clone() ?? null
-		};
-	}
-}
-
-public class Weather : ICloneable
-{
-	public string City;
-	public string WeatherType;
-	public string Temperature;
-
-	public object Clone()
-	{
-		return new Weather()
-		{
-			City = City,
-			WeatherType = WeatherType,
-			Temperature = Temperature
-		};
 	}
 }
