@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Template name="WeatherCard" src="project://database/Assets/UI/WeatherCard.uxml?fileID=9197481963319205126&amp;guid=0cf667eac73b9f7429e269852f90d40a&amp;type=3#WeatherCard" />
+    <ui:GroupBox name="Container" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; flex-direction: row; align-items: center; justify-content: space-around; min-width: 300px;">
+        <ui:Instance template="WeatherCard" name="WeatherCard" style="width: 300px; height: 300px; min-width: 200px; min-height: 200px;" />
+        <ui:Instance template="WeatherCard" name="WeatherCard" style="width: 300px; height: 300px; min-width: 200px; min-height: 200px;" />
+        <ui:Instance template="WeatherCard" name="WeatherCard" style="width: 300px; height: 300px; min-width: 200px; min-height: 200px;" />
+    </ui:GroupBox>
+</ui:UXML>
