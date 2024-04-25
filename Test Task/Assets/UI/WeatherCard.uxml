@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:VisualElement style="width: auto; height: auto; left: 0; top: 0; right: 0; bottom: 0; position: absolute; border-left-color: rgb(16, 18, 43); border-right-color: rgb(16, 18, 43); border-top-color: rgb(16, 18, 43); border-bottom-color: rgb(16, 18, 43); border-left-width: 3px; border-right-width: 3px; border-top-width: 3px; border-bottom-width: 3px; border-top-left-radius: 25px; border-bottom-left-radius: 25px; border-top-right-radius: 25px; border-bottom-right-radius: 25px; background-color: rgb(178, 185, 137);">
+        <ui:GroupBox style="margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; width: 100%; height: 70%; justify-content: center; align-items: center;">
+            <ui:Label text="City" display-tooltip-when-elided="true" name="cityName" style="-unity-text-align: upper-center; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; font-size: 25px;" />
+            <ui:VisualElement name="icon" style="width: 49%; height: 70%; background-color: rgba(219, 139, 139, 0); margin-left: 10px; margin-right: 10px; margin-top: 10px; margin-bottom: 10px;" />
+        </ui:GroupBox>
+        <ui:GroupBox style="flex-direction: row; justify-content: space-around; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; align-items: center; height: 30%; width: 100%;">
+            <ui:Label text="Temperature" display-tooltip-when-elided="true" style="font-size: 16px; -unity-font-style: bold;" />
+            <ui:Label text="temp" display-tooltip-when-elided="true" name="tempValue" style="font-size: 16px;" />
+        </ui:GroupBox>
+    </ui:VisualElement>
+</ui:UXML>
