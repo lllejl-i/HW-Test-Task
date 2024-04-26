@@ -53,8 +53,14 @@ public class SecondSceneDoc : AnimatedToolkitPage
 			_audio.OnClickMusic();
 		};
 
-		AddAnimation<MouseEnterEvent, MouseLeaveEvent>(reset, AnimationType.Growing);
-		AddAnimation<MouseEnterEvent, MouseLeaveEvent>(reset, AnimationType.BackgroundColorChanging);
+		AddAnimation<MouseEnterEvent, MouseLeaveEvent>(reset, AnimationType.Growing, new Dictionary<AnimationDataType, object>()
+			{
+				{AnimationDataType.GrowingValue, 1.2f }
+			});
+		AddAnimation<MouseEnterEvent, MouseLeaveEvent>(reset, AnimationType.BackgroundColorChanging, new Dictionary<AnimationDataType, object>()
+			{
+				{ AnimationDataType.ColorToChange, Properties.ButtonChangedColor }
+			});
 		StartCoroutine(AddEmptyCards(template));
 	}
 

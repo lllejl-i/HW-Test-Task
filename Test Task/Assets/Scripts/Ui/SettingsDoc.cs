@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine.UIElements;
 using Zenject;
 
@@ -49,7 +50,13 @@ public class SettingsDoc : AnimatedToolkitPage
 			_audio.OnClickMusic();
 			_aboutUsDoc.gameObject.SetActive(true);
 		};
-		AddAnimation<MouseEnterEvent, MouseLeaveEvent>(aboutUsButton, AnimationType.Growing);
-		AddAnimation<MouseEnterEvent, MouseLeaveEvent>(aboutUsButton, AnimationType.BackgroundColorChanging);
+		AddAnimation<MouseEnterEvent, MouseLeaveEvent>(aboutUsButton, AnimationType.Growing, new Dictionary<AnimationDataType, object>()
+			{
+				{AnimationDataType.GrowingValue, 1.2f }
+			});
+		AddAnimation<MouseEnterEvent, MouseLeaveEvent>(aboutUsButton, AnimationType.BackgroundColorChanging, new Dictionary<AnimationDataType, object>()
+		{ 
+			{ AnimationDataType.ColorToChange, Properties.ButtonChangedColor } 
+		}); 
 	}
 }

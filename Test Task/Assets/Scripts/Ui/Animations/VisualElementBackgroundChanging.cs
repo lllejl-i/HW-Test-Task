@@ -1,18 +1,19 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 public class VisualElementBackgroundChanging : VisualElementAnimation
 {
 	StyleColor _mainColor;
-	public VisualElementBackgroundChanging(VisualElement element) : base(element)
+	public VisualElementBackgroundChanging(VisualElement element, Dictionary<AnimationDataType, object> parameters) : base(element, parameters)
 	{
 		_mainColor = element.style.backgroundColor;
 	}
 
 	public override IEnumerator Animate()
 	{
-		ColorUtility.TryParseHtmlString("#EBE79D", out var color);
+		ColorUtility.TryParseHtmlString((string)_parameters[AnimationDataType.ColorToChange], out var color);
 		_elementToChange.style.backgroundColor = color;
 		yield break;
 	}

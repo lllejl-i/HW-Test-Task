@@ -1,0 +1,15 @@
+.window {
+    background-color: rgba(166, 149, 134, 255);
+    border-left-color: rgba(91, 69, 50, 255);
+    border-right-color: rgba(91, 69, 50, 255);
+    border-top-color: rgba(91, 69, 50, 255);
+    border-bottom-color: rgba(91, 69, 50, 255);
+}
+
+.button {
+    background-color: rgba(242, 185, 136, 255);
+    border-left-color: rgba(91, 69, 50, 255);
+    border-right-color: rgba(91, 69, 50, 255);
+    border-top-color: rgba(91, 69, 50, 255);
+    border-bottom-color: rgba(91, 69, 50, 255);
+}

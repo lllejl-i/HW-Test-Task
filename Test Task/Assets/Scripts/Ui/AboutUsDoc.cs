@@ -36,7 +36,11 @@ public class AboutUsDoc : AnimatedToolkitPage
 			StartCoroutine(CloseAnimation(_doc.rootVisualElement));
 			_audio.OnClickMusic();
 		};
-		AddAnimation<MouseEnterEvent, MouseLeaveEvent>(link, AnimationType.Growing);
+		AddAnimation<MouseEnterEvent, MouseLeaveEvent>(link, AnimationType.Growing,
+			new Dictionary<AnimationDataType, object>()
+			{
+				{AnimationDataType.GrowingValue, 1.1f }
+			});
 	}
 
 	private IEnumerator OpenAnimation(VisualElement root)
