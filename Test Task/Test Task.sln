@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zenject", "Zenject.csproj", "{5ABC4ED4-5E37-C21B-8C6B-58521DFB83EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{40970E9C-4BE8-F0D1-BD64-269E006BC015}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zenject-Editor", "Zenject-Editor.csproj", "{F22987CA-9BDE-1ED3-9B45-F2582B58E022}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5ABC4ED4-5E37-C21B-8C6B-58521DFB83EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ABC4ED4-5E37-C21B-8C6B-58521DFB83EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5ABC4ED4-5E37-C21B-8C6B-58521DFB83EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5ABC4ED4-5E37-C21B-8C6B-58521DFB83EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40970E9C-4BE8-F0D1-BD64-269E006BC015}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40970E9C-4BE8-F0D1-BD64-269E006BC015}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40970E9C-4BE8-F0D1-BD64-269E006BC015}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40970E9C-4BE8-F0D1-BD64-269E006BC015}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F22987CA-9BDE-1ED3-9B45-F2582B58E022}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F22987CA-9BDE-1ED3-9B45-F2582B58E022}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F22987CA-9BDE-1ED3-9B45-F2582B58E022}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F22987CA-9BDE-1ED3-9B45-F2582B58E022}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
