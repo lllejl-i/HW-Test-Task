@@ -9,6 +9,8 @@ public class ScrollbarAutoScrolling : MonoBehaviour
 	ScrollView _scrollView;
 	int _currentItemIndex = 0;
 	bool _isRightDirrection = true;
+	bool _handSwiping = false;
+	Vector2 _startSwipePosition;
 	private void Awake()
 	{
 		_doc = GetComponent<UIDocument>();
@@ -28,6 +30,7 @@ public class ScrollbarAutoScrolling : MonoBehaviour
 		var allItems = _scrollView.Q<VisualElement>("unity-content-container").Query<VisualElement>().ToList();
 		allItems.RemoveAt(0);
 		StartScrolling(allItems);
+		UserScrolling(allItems);
 	}
 
 	public void StartScrolling(List<VisualElement> items)
@@ -35,15 +38,65 @@ public class ScrollbarAutoScrolling : MonoBehaviour
 		_scrollView.RegisterCallback<WheelEvent>((e) => {
 			if(e.delta.y > 0 && _currentItemIndex < items.Count - 1)
 			{
-				_scrollView.ScrollTo(items[_currentItemIndex + 1]);
-				_currentItemIndex++;
+				ScrollRight(items);
 			}
 			else if (e.delta.y < 0 && _currentItemIndex > 0) {
-				_scrollView.ScrollTo(items[_currentItemIndex - 1]);
-				_currentItemIndex--;
+				ScrollLeft(items);
 			}
 		}, TrickleDown.TrickleDown);
 		StartCoroutine(AutoScroll(items));
+	}
+
+	public void UserScrolling(List<VisualElement> items)
+	{
+		float y = 0;
+		_scrollView.RegisterCallback<PointerDownEvent>(e =>
+		{
+			_startSwipePosition = e.position;
+			Debug.Log(_startSwipePosition);
+			_handSwiping = true;
+		}, TrickleDown.TrickleDown);
+
+		_scrollView.RegisterCallback<PointerUpEvent>(e =>
+		{
+			RegisterSwipe(e.position, items);
+		});
+
+		_scrollView.RegisterCallback<PointerLeaveEvent>(e =>
+		{
+			RegisterSwipe(e.position, items);
+		});
+	}
+
+	private void RegisterSwipe(Vector2 position, List<VisualElement> items)
+	{
+		if (_handSwiping)
+		{
+			if (_startSwipePosition.x - position.x > 0 && _currentItemIndex > 0)
+			{
+				_scrollView.ScrollTo(items[_currentItemIndex - 1]);
+				_currentItemIndex--;
+			}
+			else if (_currentItemIndex < items.Count - 1 && _startSwipePosition.x - position.x < 0)
+			{
+				ScrollRight(items);
+			}
+			_startSwipePosition = position;
+			_handSwiping = false;
+			Debug.Log(position);
+		}
+	}
+
+	private void ScrollRight(List<VisualElement> items)
+	{
+		_scrollView.ScrollTo(items[_currentItemIndex + 1]);
+		_currentItemIndex++;
+	}
+
+	private void ScrollLeft(List<VisualElement> items)
+	{
+		_scrollView.ScrollTo(items[_currentItemIndex - 1]);
+		_currentItemIndex--;
 	}
 
 	private IEnumerator AutoScroll(List<VisualElement> items)

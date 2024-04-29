@@ -49,7 +49,7 @@ public class AboutUsDoc : AnimatedToolkitPage
 		root.style.opacity = new StyleFloat(0f);
 		while (root.style.opacity.value <= 1)
 		{
-			root.style.opacity = new StyleFloat(root.resolvedStyle.opacity + 0.003f);
+			root.style.opacity = new StyleFloat(root.resolvedStyle.opacity + 0.03f);
 			yield return new WaitForEndOfFrame();
 		}
 	}
@@ -59,7 +59,7 @@ public class AboutUsDoc : AnimatedToolkitPage
 		while (root.resolvedStyle.opacity > 0)
 		{
 			yield return new WaitForEndOfFrame();
-			root.style.opacity = new StyleFloat(root.resolvedStyle.opacity - 0.003f);
+			root.style.opacity = new StyleFloat(root.resolvedStyle.opacity - 0.03f);
 		}
 		gameObject.SetActive(false);
 

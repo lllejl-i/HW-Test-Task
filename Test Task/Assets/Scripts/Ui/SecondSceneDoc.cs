@@ -9,6 +9,8 @@ using Zenject;
 
 public class SecondSceneDoc : AnimatedToolkitPage
 {
+	[SerializeField]
+	private VisualTreeAsset _cardTemplate;
 	private UIDocument _doc;
 	private List<VisualElement> _rows;
 	private WeatherCard[,] _items;
@@ -17,6 +19,7 @@ public class SecondSceneDoc : AnimatedToolkitPage
 	private WeatherDataController _controller;
 	private SettingsDoc _settings;
 	private Audio _audio;
+	
 
 	[Inject]
 	public void InjectDependencies(WeatherDataController weatherData, SettingsDoc settings, Audio audio)
@@ -33,7 +36,15 @@ public class SecondSceneDoc : AnimatedToolkitPage
 
 	private void OnEnable()
 	{
-		var template = LoadData();
+		_rows = _doc.rootVisualElement.Q<VisualElement>("CardsContainer")
+			.Query<VisualElement>("RowTemplate")
+			.ToList()
+			.Select(i => i.Q<VisualElement>("Container"))
+			.ToList();
+		List<VisualElement> cardsList = _rows.SelectMany(r => r.Query<VisualElement>("WeatherCard").ToList()).ToList();
+
+		_items = _controller.CreateWeatherCards(cardsList);
+		LoadData();
 		var reset = _doc.rootVisualElement.Q<Button>("ResetButton");
 		reset.clicked += () =>
 		{
@@ -61,19 +72,14 @@ public class SecondSceneDoc : AnimatedToolkitPage
 			{
 				{ AnimationDataType.ColorToChange, Properties.ButtonChangedColor }
 			});
-		StartCoroutine(AddEmptyCards(template));
+		
+		
+		StartCoroutine(AddEmptyCards(_cardTemplate.CloneTree()));
 	}
 
-	private VisualElement LoadData()
+	private void LoadData()
 	{
-		_rows = _doc.rootVisualElement.Q<VisualElement>("CardsContainer")
-			.Query<VisualElement>("RowTemplate")
-			.ToList()
-			.Select(i => i.Q<VisualElement>("Container"))
-			.ToList();
-		List<VisualElement> cardsList = _rows.SelectMany(r => r.Query<VisualElement>("WeatherCard").ToList()).ToList();
-
-		_items = _controller.CreateWeatherCards(cardsList);
+		
 		foreach (var item in _items)
 		{
 			if (item.Weather != null)
@@ -99,7 +105,6 @@ public class SecondSceneDoc : AnimatedToolkitPage
 		}
 
 		_loaded = true;
-		return cardsList[0];
 	}
 
 	private IEnumerator AddEmptyCards(VisualElement template)
@@ -109,7 +114,7 @@ public class SecondSceneDoc : AnimatedToolkitPage
 		{
 			if (item.Weather == null)
 			{
-				item.WeatherCardItem = CreateEmptyElement(template);
+				item.WeatherCardItem = CreateEmptyElement();
 				_rows[item.RowGridPosition].RemoveAt(item.ColGridPosition);
 				_rows[item.RowGridPosition].Insert(item.ColGridPosition, item.WeatherCardItem);
 			}
@@ -146,7 +151,7 @@ public class SecondSceneDoc : AnimatedToolkitPage
 			_items[k, card.ColGridPosition].RowGridPosition--;
 		}
 
-		var element = CreateEmptyElement(card.WeatherCardItem);
+		var element = CreateEmptyElement();
 		_rows[2].Insert(card.ColGridPosition, element);
 		_items[2, card.ColGridPosition] = new WeatherCard
 		{
@@ -160,51 +165,37 @@ public class SecondSceneDoc : AnimatedToolkitPage
 	private void CardsReset() {
 		if (_loaded)
 		{
-			var temp = _controller.GetCards();
+			List<VisualElement> cards = new List<VisualElement>();
+			for (int i = 0; i < 9; i++)
+			{
+				cards.Add(_cardTemplate.CloneTree());
+			}
+			_items = _controller.ResetCards(cards);
+			foreach (VisualElement row in _rows)
+				row.Clear();
+			LoadData();
 			for (int i = 0; i < 3; i++)
 			{
-				for (int j = 0; j < 3; j++)
-				{
-					if (_items[i, j].Weather != null)
-						_removedCards.Add(_items[i, j]);
-				}
-			}
-
-			foreach (var item in temp)
-			{
-				foreach (var removedItem in _removedCards)
-				{
-					if (item.WeatherCardItem == removedItem.WeatherCardItem)
-					{
-						removedItem.ColGridPosition = item.ColGridPosition;
-						removedItem.RowGridPosition = item.RowGridPosition;
-					}
-				}
-			}
-			foreach (var item in _removedCards)
-			{
-				_items[item.RowGridPosition, item.ColGridPosition] = item;
-			}
-			for (int i = 0; i < 3; i++)
-			{
-				_rows[i].Clear();
 				for (int j = 0; j < 3; j++)
 				{
 					_rows[i].Add(_items[i, j].WeatherCardItem);
+					SetCardSize(_items[i, j].WeatherCardItem);
 				}
 			}
 		}
 	}
 
-	private VisualElement CreateEmptyElement(VisualElement item)
+	private void SetCardSize(VisualElement element)
+	{
+		element.style.width = 300;
+		element.style.height = 300;
+	}
+
+	private VisualElement CreateEmptyElement()
 	{
 		var element = new VisualElement();
-		element.style.marginBottom = item.resolvedStyle.marginBottom;
-		element.style.marginLeft = item.resolvedStyle.marginLeft;
-		element.style.marginTop = item.resolvedStyle.marginTop;
-		element.style.marginRight = item.resolvedStyle.marginRight;
-		element.style.width = item.resolvedStyle.width;
-		element.style.height = item.resolvedStyle.height;
+		element.style.width = 300;
+		element.style.height = 300;
 		return element;
 	}
 

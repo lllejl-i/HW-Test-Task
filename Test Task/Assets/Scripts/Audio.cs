@@ -9,10 +9,15 @@ public class Audio : MonoBehaviour
 	[SerializeField]
 	private AudioSource _clickSource;
 	private bool _makeSounds = true;
+	private bool _playMusic = true;
+
+	public bool PlayMusic => _playMusic;
+	public bool MakeSounds => _makeSounds;
 
 	public void ChangePlayingMode(bool playMusic)
 	{
 		_musicSource.gameObject.SetActive(playMusic);
+		_playMusic = playMusic;
 	}
 
 	public void ChangeSoundsMode(bool playSounds)
@@ -31,7 +36,7 @@ public class Audio : MonoBehaviour
 	public void ChangeVolume(float volume)
 	{
 		Debug.Log($"Volume {volume}");
-		_musicSource.volume = volume/100;
-		_clickSource.volume = volume/100;
+		_musicSource.volume = volume;
+		_clickSource.volume = volume;
 	}
 }

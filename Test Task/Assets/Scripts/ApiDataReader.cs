@@ -25,7 +25,7 @@ public class ApiDataReader
 		}
 		return cardHolder;
 	}
-	private Weather ReadCard(string city)
+	public Weather ReadCard(string city)
 	{
 		Weather weather = new Weather();
 		string geoUrl = $"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={_apiKey}";

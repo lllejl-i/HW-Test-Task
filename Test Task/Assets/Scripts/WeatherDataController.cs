@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
 using UnityEngine.UIElements;
 using Zenject;
 
 public class WeatherDataController
 {
-
+	private static List<string> cities = new List<string>() { "Kyiv", "Lviv", "Kharkiv", "Odesa", "Mykolaiv", "Cairo", "Warsaw", "London", "Paris" };
 	private WeatherCardHolder _cardHolder;
 	private JsonSerializer _serializer;
 	private ApiDataReader _reader;
@@ -27,14 +28,11 @@ public class WeatherDataController
 		}
 		else
 		{
-			var cities = new List<string>(){ "Kyiv", "Lviv", "Kharkiv", "Odesa", "Mykolaiv", "Cairo", "Warsaw", "London", "Paris" };
 			_cardHolder = _reader.ReadData(cities);
 		}
 	}
 	public WeatherCard[,] CreateWeatherCards(List<VisualElement> weatherCards)
 	{
-		WeatherCard[,] result = new WeatherCard[3, 3];
-
 		for (int i = 0; i < weatherCards.Count; i++)
 		{
 			if (_cardHolder.Weathers[i].Weather != null)
@@ -48,7 +46,13 @@ public class WeatherDataController
 		return GetCards();
 	}
 
-	public WeatherCard[,] GetCards()
+	public WeatherCard[,] ResetCards(List<VisualElement> weatherCards)
+	{
+		_cardHolder = _reader.ReadData(cities);
+		return CreateWeatherCards(weatherCards);
+	}
+
+	private WeatherCard[,] GetCards()
 	{
 		WeatherCard[,] result = new WeatherCard[3, 3];
 		for (int i = 0; i < _cardHolder.Weathers.Count; i++)
